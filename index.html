@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPGB Quiz Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#080c14;--card:rgba(15,23,42,0.85);--card-solid:#0f172a;--border:rgba(245,158,11,0.15);--border-s:rgba(245,158,11,0.35);--accent:#f59e0b;--accent-d:rgba(245,158,11,0.12);--ok:#10b981;--ok-d:rgba(16,185,129,0.12);--no:#ef4444;--no-d:rgba(239,68,68,0.12);--fg:#f1f5f9;--muted:#94a3b8;--dim:#64748b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
+.bg-m{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 600px 400px at 20% 20%,rgba(245,158,11,.06) 0%,transparent 70%),radial-gradient(ellipse 500px 500px at 80% 80%,rgba(16,185,129,.04) 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 60% 10%,rgba(245,158,11,.03) 0%,transparent 70%);animation:md 20s ease-in-out infinite alternate}
+@keyframes md{0%{transform:scale(1) translate(0,0)}50%{transform:scale(1.05) translate(-10px,15px)}100%{transform:scale(1) translate(10px,-10px)}}
+.ptc{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.pt{position:absolute;width:3px;height:3px;background:var(--accent);border-radius:50%;opacity:0;animation:fu linear infinite}
+@keyframes fu{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:.6}90%{opacity:.3}100%{opacity:0;transform:translateY(-10vh) scale(1)}}
+.scr{display:none;position:relative;z-index:1;min-height:100vh;width:100%}
+.scr.on{display:block}
+.gc{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(20px);border-radius:16px}
+.bp{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0f1a;font-weight:700;padding:14px 32px;border-radius:12px;border:none;cursor:pointer;font-size:16px;font-family:'Outfit',sans-serif;transition:all .3s;letter-spacing:.3px;position:relative;overflow:hidden}
+.bp:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,158,11,.3)}
+.bp:active{transform:translateY(0)}
+.bp:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.bs{background:transparent;color:var(--accent);font-weight:600;padding:12px 28px;border-radius:12px;border:1.5px solid var(--border-s);cursor:pointer;font-size:15px;font-family:'Outfit',sans-serif;transition:all .3s}
+.bs:hover{background:var(--accent-d);border-color:var(--accent)}
+.ob{width:100%;text-align:left;padding:16px 20px;border-radius:12px;border:1.5px solid var(--border);background:rgba(15,23,42,.6);color:var(--fg);cursor:pointer;font-size:15px;font-family:'Space Grotesk',sans-serif;transition:all .25s;display:flex;align-items:center;gap:14px}
+.ob:hover:not(.dis){border-color:var(--accent);background:var(--accent-d);transform:translateX(4px)}
+.ob .ol{width:34px;height:34px;border-radius:8px;background:rgba(245,158,11,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;transition:all .25s}
+.ob:hover:not(.dis) .ol{background:var(--accent);color:var(--bg)}
+.ob.ca{border-color:var(--ok)!important;background:var(--ok-d)!important}
+.ob.ca .ol{background:var(--ok)!important;color:#fff!important}
+.ob.wa{border-color:var(--no)!important;background:var(--no-d)!important}
+.ob.wa .ol{background:var(--no)!important;color:#fff!important}
+.ob.dis{cursor:default;pointer-events:none}
+.prt{width:100%;height:6px;background:rgba(245,158,11,.1);border-radius:3px;overflow:hidden}
+.prf{height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:3px;transition:width .4s}
+.tr{width:56px;height:56px;position:relative}
+.tr svg{transform:rotate(-90deg)}
+.tr circle{fill:none;stroke-width:3.5}
+.tr .tk{stroke:rgba(245,158,11,.12)}
+.tr .fl{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+.tr .fl.ug{stroke:var(--no)}
+.tr .tt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Outfit',sans-serif}
+.tr .tt.ug{color:var(--no)}
+.bd{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.3px}
+.bcc{background:rgba(59,130,246,.12);color:#60a5fa}
+.bh{background:rgba(168,85,247,.12);color:#c084fc}
+.bm{background:rgba(245,158,11,.12);color:#fbbf24}
+.inf{width:100%;padding:14px 18px;border-radius:12px;border:1.5px solid var(--border);background:rgba(15,23,42,.6);color:var(--fg);font-size:15px;font-family:'Space Grotesk',sans-serif;transition:all .3s;outline:none}
+.inf:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,.1)}
+.inf::placeholder{color:var(--dim)}
+.tc{position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.to{padding:14px 20px;border-radius:12px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;animation:ti .4s;min-width:280px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.to.ts{background:#065f46;color:#a7f3d0;border:1px solid #10b981}
+.to.te{background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444}
+.to.tn{background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6}
+@keyframes ti{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.mo{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.mo.on{display:flex}
+.mbx{background:var(--card-solid);border:1px solid var(--border);border-radius:20px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;padding:32px;animation:mi .3s}
+@keyframes mi{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.dt{width:100%;border-collapse:separate;border-spacing:0}
+.dt th{text-align:left;padding:12px 16px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);border-bottom:1px solid var(--border);font-family:'Outfit',sans-serif;font-weight:600}
+.dt td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(245,158,11,.06)}
+.dt tbody tr{transition:background .2s}
+.dt tbody tr:hover{background:rgba(245,158,11,.04)}
+.sc{width:180px;height:180px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.sc::before{content:'';position:absolute;inset:0;border-radius:50%;padding:4px;background:conic-gradient(var(--accent) calc(var(--p)*3.6deg),rgba(245,158,11,.1) 0);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.cff{position:fixed;z-index:9998;pointer-events:none;animation:cfall linear forwards}
+@keyframes cfall{0%{opacity:1;transform:translateY(-10vh) rotate(0)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+.fi{animation:fin .4s ease-out}
+@keyframes fin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(245,158,11,.2);border-radius:3px}
+.tb{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid transparent;background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all .25s}
+.tb:hover{color:var(--fg);background:rgba(245,158,11,.06)}
+.tb.on{color:var(--accent);background:var(--accent-d);border-color:var(--border-s)}
+.stc{padding:20px;border-radius:14px;background:rgba(15,23,42,.6);border:1px solid var(--border)}
+.stc .sv{font-size:32px;font-weight:800;font-family:'Outfit',sans-serif;line-height:1.1}
+.stc .sl{font-size:13px;color:var(--muted);margin-top:4px}
+.adc{padding:16px;border-radius:12px;border:1px solid var(--border);margin-bottom:10px;background:rgba(15,23,42,.4)}
+.adc.ac{border-left:3px solid var(--ok)}
+.adc.aw{border-left:3px solid var(--no)}
+.adc.ask{border-left:3px solid var(--dim)}
+@media(max-width:640px){.ob{padding:13px 14px;font-size:14px}.ob .ol{width:28px;height:28px;font-size:12px}.bp{padding:12px 24px;font-size:15px}.mbx{padding:20px}}
+</style>
+</head>
+<body>
+
+<div class="bg-m"></div>
+<div class="ptc" id="ptc"></div>
+<div class="tc" id="tc"></div>
+
+<!-- WELCOME -->
+<div class="scr on" id="S_welcome">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;max-width:42rem;margin:0 auto">
+<div class="fi" style="text-align:center">
+<div style="width:80px;height:80px;margin:0 auto 24px;border-radius:16px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(245,158,11,.2)">
+<i class="fas fa-brain" style="font-size:32px;color:#0a0f1a"></i>
+</div>
+<h1 style="font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:-.02px;line-height:1.1;margin-bottom:12px">UPGB Quiz<br><span style="color:#f59e0b">Challenge</span></h1>
+<p style="color:#94a3b8;font-size:16px;margin-bottom:8px;max-width:28rem;margin-left:auto;margin-right:auto">Test your knowledge on Car Loan, Home Loan &amp; Mortgage Loan schemes — 70 questions, 30 seconds each.</p>
+<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px;margin-bottom:40px;font-size:12px;color:#64748b;flex-wrap:wrap">
+<span style="display:flex;align-items:center;gap:6px"><span class="bd bcc">Car Loan</span> 25 Qs</span>
+<span style="display:flex;align-items:center;gap:6px"><span class="bd bh">Home Loan</span> 20 Qs</span>
+<span style="display:flex;align-items:center;gap:6px"><span class="bd bm">Mortgage</span> 25 Qs</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px">
+<button class="bp" style="font-size:18px;padding:16px 40px" id="btnStart"><i class="fas fa-play" style="margin-right:8px"></i>Start Quiz</button>
+<button class="bs" id="btnAdmin"><i class="fas fa-shield-halved" style="margin-right:8px"></i>Admin Panel</button>
+</div>
+<p style="color:#475569;font-size:12px;margin-top:32px">No login required &middot; Results saved locally &middot; Share your score code</p>
+</div>
+</div>
+</div>
+
+<!-- REGISTER -->
+<div class="scr" id="S_register">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;max-width:28rem;margin:0 auto">
+<div class="gc fi" style="padding:32px;width:100%">
+<div style="text-align:center;margin-bottom:32px">
+<div style="width:56px;height:56px;margin:0 auto 16px;border-radius:12px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-plus" style="font-size:22px;color:#f59e0b"></i></div>
+<h2 style="font-size:24px;font-weight:700">Join the Quiz</h2>
+<p style="color:#94a3b8;font-size:14px;margin-top:4px">Enter your details to begin</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div><label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Full Name *</label><input type="text" id="pName" class="inf" placeholder="Enter your full name" maxlength="50" autocomplete="off"></div>
+<div><label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Branch / Department</label><input type="text" id="pBranch" class="inf" placeholder="e.g. Main Branch, Credit Dept" maxlength="60" autocomplete="off"></div>
+<div><label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Employee Code (optional)</label><input type="text" id="pCode" class="inf" placeholder="e.g. EMP-0123" maxlength="20" autocomplete="off"></div>
+</div>
+<div style="display:flex;gap:12px;margin-top:32px">
+<button class="bs" style="flex:1" id="btnRegBack"><i class="fas fa-arrow-left" style="margin-right:6px"></i>Back</button>
+<button class="bp" style="flex:1" id="btnBegin">Begin<i class="fas fa-arrow-right" style="margin-left:6px"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="scr" id="S_quiz">
+<div style="display:flex;flex-direction:column;min-height:100vh;max-width:48rem;margin:0 auto;padding:16px">
+<div class="fi" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+<div style="display:flex;align-items:center;gap:12px">
+<span id="qCat" class="bd bcc">Car Loan</span>
+<span style="color:#94a3b8;font-size:14px;font-weight:500"><span id="qCur">1</span> / <span id="qTot">70</span></span>
+</div>
+<div style="display:flex;align-items:center;gap:16px">
+<div style="display:flex;align-items:center;gap:8px;font-size:14px"><i class="fas fa-check-circle" style="color:#10b981"></i><span id="ccnt" style="font-weight:700;color:#10b981">0</span></div>
+<div style="display:flex;align-items:center;gap:8px;font-size:14px"><i class="fas fa-times-circle" style="color:#ef4444"></i><span id="wcnt" style="font-weight:700;color:#ef4444">0</span></div>
+<div class="tr" id="tRing">
+<svg width="56" height="56" viewBox="0 0 56 56"><circle class="tk" cx="28" cy="28" r="24"></circle><circle class="fl" id="tCir" cx="28" cy="28" r="24" stroke-dasharray="150.796" stroke-dashoffset="0"></circle></svg>
+<div class="tt" id="tTxt">30</div>
+</div>
+</div>
+</div>
+<div class="prt" style="margin-bottom:24px"><div class="prf" id="pFill" style="width:0%"></div></div>
+<div class="gc fi" id="qCard" style="padding:24px;flex:1">
+<p id="qTxt" style="font-size:clamp(16px,2.5vw,20px);font-weight:600;line-height:1.6;margin-bottom:32px;font-family:'Outfit',sans-serif">Loading question...</p>
+<div id="qOpts" style="display:flex;flex-direction:column;gap:12px"></div>
+</div>
+<div id="nWrap" style="display:none;justify-content:flex-end;margin-top:16px">
+<button class="bp" id="nBtn">Next <i class="fas fa-arrow-right" style="margin-left:8px"></i></button>
+</div>
+</div>
+</div>
+
+<!-- RESULT -->
+<div class="scr" id="S_result">
+<div style="display:flex;flex-direction:column;align-items:center;padding:40px 24px;min-height:100vh;max-width:42rem;margin:0 auto;width:100%">
+<div class="fi" id="resCont" style="text-align:center;width:100%"></div>
+</div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="scr" id="S_admLog">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;max-width:24rem;margin:0 auto">
+<div class="gc fi" style="padding:32px;width:100%">
+<div style="text-align:center;margin-bottom:24px">
+<div style="width:56px;height:56px;margin:0 auto 16px;border-radius:12px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-lock" style="font-size:22px;color:#f59e0b"></i></div>
+<h2 style="font-size:24px;font-weight:700">Admin Access</h2>
+<p style="color:#94a3b8;font-size:14px;margin-top:4px">Enter the admin password</p>
+</div>
+<div style="margin-bottom:16px"><input type="password" id="aPass" class="inf" placeholder="Password"></div>
+<p style="font-size:12px;color:#475569;margin-bottom:24px">Default: <code style="color:rgba(245,158,11,.7);background:rgba(245,158,11,.05);padding:2px 8px;border-radius:4px">upgb2026</code></p>
+<div style="display:flex;gap:12px">
+<button class="bs" style="flex:1" id="btnAdBack">Back</button>
+<button class="bp" style="flex:1" id="btnAdUnlock">Unlock</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="scr" id="S_admin">
+<div style="max-width:80rem;margin:0 auto;padding:24px 24px 48px">
+<div class="fi" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:32px">
+<div><h2 style="font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700"><i class="fas fa-chart-bar" style="color:#f59e0b;margin-right:8px"></i>Admin Dashboard</h2><p style="color:#94a3b8;font-size:14px;margin-top:4px">View all participant scores and answers</p></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<button class="bs" style="font-size:14px;padding:10px 18px" id="btnCSV"><i class="fas fa-file-csv" style="margin-right:6px"></i>Export CSV</button>
+<button class="bs" style="font-size:14px;padding:10px 18px" id="btnClear"><i class="fas fa-trash" style="margin-right:6px"></i>Clear All</button>
+<button class="bs" style="font-size:14px;padding:10px 18px" id="btnLogout"><i class="fas fa-sign-out-alt" style="margin-right:6px"></i>Logout</button>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:8px" id="tabBar">
+<button class="tb on" data-t="tOv">Overview</button>
+<button class="tb" data-t="tPar">Participants</button>
+<button class="tb" data-t="tImp">Import Scores</button>
+<button class="tb" data-t="tAna">Analytics</button>
+</div>
+<div id="tOv">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:24px" id="stCards"></div>
+<div class="gc" style="padding:24px"><h3 style="font-size:18px;font-weight:700;margin-bottom:16px"><i class="fas fa-trophy" style="color:#f59e0b;margin-right:8px"></i>Leaderboard</h3><div style="overflow-x-auto" id="lbTab"></div></div>
+</div>
+<div id="tPar" style="display:none">
+<div class="gc" style="padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px"><h3 style="font-size:18px;font-weight:700">All Participants</h3><input type="text" class="inf" style="max-width:260px;padding:10px 14px;font-size:13px" placeholder="Search by name or branch..." id="sPar"></div>
+<div style="overflow-x-auto" id="parTab"></div>
+</div>
+</div>
+<div id="tImp" style="display:none">
+<div class="gc" style="padding:24px;max-width:42rem">
+<h3 style="font-size:18px;font-weight:700;margin-bottom:8px"><i class="fas fa-file-import" style="color:#f59e0b;margin-right:8px"></i>Import Participant Scores</h3>
+<p style="color:#94a3b8;font-size:14px;margin-bottom:24px">Participants can share their result codes after completing the quiz. Paste one code per line below to import.</p>
+<textarea id="impArea" class="inf" rows="8" placeholder="Paste result codes here, one per line..."></textarea>
+<button class="bp" style="margin-top:16px" id="btnImp"><i class="fas fa-upload" style="margin-right:8px"></i>Import Scores</button>
+</div>
+</div>
+<div id="tAna" style="display:none">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px" id="secSt"></div>
+<div class="gc" style="padding:24px">
+<h3 style="font-size:18px;font-weight:700;margin-bottom:8px"><i class="fas fa-chart-line" style="color:#f59e0b;margin-right:8px"></i>Question-wise Difficulty</h3>
+<p style="color:#94a3b8;font-size:14px;margin-bottom:16px">Percentage of participants who answered correctly per question</p>
+<div style="overflow-x:auto" id="qAna"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="dModal"><div class="mbx" id="dModC"></div></div>
+
+<script>
+var QD=[
+{id:1,cat:"car",q:"The revised Car Loan Scheme was issued on:",o:["01.01.2026","18.02.2026","31.03.2026","01.04.2026"],a:1},
+{id:2,cat:"car",q:"Which department issued the revised Car Loan Scheme Circular?",o:["HR Department","Vigilance Department","Head Office Credit Department","Inspection Department"],a:2},
+{id:3,cat:"car",q:"Which of the following is eligible under the Car Loan Scheme?",o:["Resident Indians","Staff/Ex-Staff Members","Corporates/Firms/LLPs","All of the above"],a:3},
+{id:4,cat:"car",q:"The purpose of the Car Loan is:",o:["Purchase of used commercial vehicles","Purchase of new passenger cars, MUVs, SUVs and Electric Vehicles for private use","Purchase of tractors","Purchase of buses"],a:1},
+{id:5,cat:"car",q:"The type of facility available under the scheme is:",o:["Cash Credit","Term Loan","Overdraft","Demand Loan"],a:1},
+{id:6,cat:"car",q:"Minimum age of the applicant should be:",o:["18 Years","20 Years","21 Years","25 Years"],a:2},
+{id:7,cat:"car",q:"Maximum age including repayment period should not exceed:",o:["60 Years","65 Years","70 Years","75 Years"],a:1},
+{id:8,cat:"car",q:"What is the security for the Car Loan?",o:["Mortgage of Property","Hypothecation of the vehicle to be purchased","Gold","Fixed Deposit"],a:1},
+{id:9,cat:"car",q:"Maximum loan amount for an Individual borrower is:",o:["\u20B950 Lakh","\u20B9100 Lakh","\u20B9150 Lakh","\u20B9200 Lakh"],a:1},
+{id:10,cat:"car",q:"Maximum loan amount for Corporate borrowers is:",o:["\u20B9100 Lakh","\u20B9200 Lakh","\u20B9300 Lakh","\u20B9500 Lakh"],a:2},
+{id:11,cat:"car",q:"FOIR for salaried borrowers having GMI below \u20B950,000 per month is:",o:["50%","60%","65%","70%"],a:1},
+{id:12,cat:"car",q:"FOIR for salaried borrowers having GMI of \u20B91.50 lakh and above is:",o:["65%","70%","80%","90%"],a:2},
+{id:13,cat:"car",q:"Uniform Margin under the scheme is:",o:["5%","10%","15%","20%"],a:1},
+{id:14,cat:"car",q:"Loan to Value (LTV) is calculated on:",o:["Ex-showroom Price","Invoice Price","On-Road Price (excluding accessories)","Dealer Cost"],a:2},
+{id:15,cat:"car",q:"Maximum repayment period under the scheme is:",o:["60 Months","72 Months","84 Months","96 Months"],a:2},
+{id:16,cat:"car",q:"Pre-closure charges under the scheme are:",o:["1%","2%","0.5%","Nil"],a:3},
+{id:17,cat:"car",q:"Credit Rating shall be done as per:",o:["RBI Guidelines","Branch Manager's discretion","Bank's Loan Policy","CIC Score only"],a:2},
+{id:18,cat:"car",q:"Which invoice is acceptable for sanction?",o:["Invoice issued by Broker","Invoice issued by Sub-dealer","Proforma Invoice issued by Authorized Dealer/OEM","Dealer's handwritten quotation"],a:2},
+{id:19,cat:"car",q:"Comprehensive Insurance should contain:",o:["Third Party Cover only","Bank Clause","Personal Accident Cover only","Engine Protection only"],a:1},
+{id:20,cat:"car",q:"Processing charges shall be recovered as per:",o:["Branch decision","RBI Circular","Bank's Service Charge Circular issued from time to time","Negotiation with customer"],a:2},
+{id:21,cat:"car",q:"Which report is mandatory before sanction?",o:["GST Return","Property Valuation","Credit Information Report (CIBIL/CRIF/Equifax/Experian)","Stock Statement"],a:2},
+{id:22,cat:"car",q:"Fresh sanction/disbursement is NOT allowed for:",o:["Electric Vehicles","Hybrid Vehicles","BS-IV Vehicles","Petrol Cars"],a:2},
+{id:23,cat:"car",q:"Post-sanction inspection should verify:",o:["Colour of Vehicle","Fuel Type","Engine Number and Chassis Number","Accessories"],a:2},
+{id:24,cat:"car",q:"Branch should issue No Objection Certificate (NOC) within:",o:["3 Days","5 Days","7 Days","15 Days"],a:2},
+{id:25,cat:"car",q:"Final clarification authority regarding the scheme is:",o:["Regional Manager","Executive Director","Chairman/General Manager (Credit)","Branch Manager"],a:2},
+{id:26,cat:"home",q:"Who is eligible to avail UPGB Home Loan?",o:["Only salaried persons","Only self-employed persons","All individuals singly or jointly including staff members","Only Government employees"],a:2},
+{id:27,cat:"home",q:"Which of the following is NOT eligible under the scheme?",o:["Individual borrower","Joint borrowers","Staff members","Hindu Undivided Family (HUF)"],a:3},
+{id:28,cat:"home",q:"Minimum employment period required for a salaried applicant is:",o:["6 months","1 year","2 years","3 years"],a:1},
+{id:29,cat:"home",q:"Minimum business/profession experience required for a non-salaried applicant is:",o:["1 year","2 years","3 years","5 years"],a:1},
+{id:30,cat:"home",q:"What is the minimum age of the main applicant?",o:["18 years","20 years","21 years","25 years"],a:2},
+{id:31,cat:"home",q:"The minimum age of a co-applicant can be:",o:["18 years","19 years","20 years","21 years"],a:0},
+{id:32,cat:"home",q:"Under normal conditions, the maximum repayment age for self-employed/professional borrowers is:",o:["60 years","65 years","68 years","70 years"],a:1},
+{id:33,cat:"home",q:"Under certain conditions, the maximum age up to which Home Loan repayment may be allowed is:",o:["65 years","68 years","70 years","75 years"],a:2},
+{id:34,cat:"home",q:"Purchase of an old house is generally allowed if the property is not more than:",o:["15 years old","20 years old","25 years old","30 years old"],a:2},
+{id:35,cat:"home",q:"Construction of a house after purchase of a residential plot should normally be completed within:",o:["1 year","2 years","3 years","5 years"],a:2},
+{id:36,cat:"home",q:"If construction is not completed within the stipulated period, the branch will:",o:["Close the account","Convert the loan into OD","Charge Commercial Rate of Interest","Waive the interest"],a:2},
+{id:37,cat:"home",q:"Maximum Home Loan limit in Metro Cities is:",o:["\u20B92 Crore","\u20B93 Crore","\u20B94 Crore","\u20B95 Crore"],a:3},
+{id:38,cat:"home",q:"Maximum Home Loan limit in Rural areas is:",o:["\u20B950 lakh","\u20B91 Crore","\u20B92 Crore","\u20B93 Crore"],a:1},
+{id:39,cat:"home",q:"Income assessment for salaried borrowers should generally be based on:",o:["Latest salary slip only","Last six months salary","Average of last three months' salary slips","Employer certificate only"],a:2},
+{id:40,cat:"home",q:"Income Tax Returns (ITR) should generally be obtained for:",o:["One year","Two years","Three years","Five years"],a:2},
+{id:41,cat:"home",q:"Home Loan proposals can be sourced by a branch near:",o:["Property location only","Borrower's residence only","Borrower's workplace only","Any of the above as per the scheme"],a:3},
+{id:42,cat:"home",q:"Which insurance cover is available under the Home Loan scheme?",o:["Vehicle Insurance","Fire Insurance","Group Credit Life Insurance","Health Insurance"],a:2},
+{id:43,cat:"home",q:"Reimbursement of expenses already incurred for purchase/construction is generally allowed if the property was purchased/constructed within:",o:["12 months","24 months","36 months","48 months"],a:1},
+{id:44,cat:"home",q:"Margin required for reimbursement cases is:",o:["10%","15%","20%","25%"],a:3},
+{id:45,cat:"home",q:"Which of the following properties should NOT be financed?",o:["Newly constructed house","Ready flat","Residential plot","Property under litigation"],a:3},
+{id:46,cat:"mort",q:"Who is eligible under the Individual Mortgage Loan Scheme?",o:["Only Salaried Employees","Resident Indians, including existing staff members under the public scheme","Only Businessmen","Only Farmers"],a:1},
+{id:47,cat:"mort",q:"Mortgage Loan can be sanctioned for:",o:["Share Trading","Speculative Activities","Any genuine purpose except financial speculation","Betting Activities"],a:2},
+{id:48,cat:"mort",q:"Which of the following categories is NOT eligible under the scheme?",o:["Salaried Employees","Professionals","Share/Stock Brokers engaged in speculative activities","Agriculturists"],a:2},
+{id:49,cat:"mort",q:"Minimum employment/business continuity required is:",o:["1 Year","2 Years","3 Years","5 Years"],a:2},
+{id:50,cat:"mort",q:"Maximum permissible break in service is:",o:["1 Month","2 Months","3 Months","6 Months"],a:2},
+{id:51,cat:"mort",q:"Minimum Gross Annual Income (GAI) required is:",o:["\u20B92.00 Lakh","\u20B93.00 Lakh","\u20B95.00 Lakh","\u20B96.00 Lakh"],a:1},
+{id:52,cat:"mort",q:"Minimum age of borrower is:",o:["18 Years","20 Years","21 Years","25 Years"],a:2},
+{id:53,cat:"mort",q:"Maximum age of borrower is:",o:["55 Years","60 Years (subject to scheme conditions)","62 Years","65 Years"],a:1},
+{id:54,cat:"mort",q:"Which facilities are available under the scheme?",o:["Cash Credit only","Demand Loan only","Term Loan/Demand Loan and Overdraft","Bank Guarantee"],a:2},
+{id:55,cat:"mort",q:"Minimum annual turnover required in an OD account is:",o:["10% of the limit","15% of the limit","20% of the limit","25% of the sanctioned limit"],a:3},
+{id:56,cat:"mort",q:"Minimum Mortgage Loan amount is:",o:["\u20B91.00 Lakh","\u20B92.00 Lakh","\u20B95.00 Lakh","\u20B910.00 Lakh"],a:1},
+{id:57,cat:"mort",q:"Maximum loan limit for Rural Branches is:",o:["\u20B950 Lakh","\u20B91.00 Crore","\u20B92.00 Crore","\u20B95.00 Crore"],a:1},
+{id:58,cat:"mort",q:"FOIR for borrowers having Net Monthly Income up to \u20B975,000 is:",o:["40%","50%","60%","70%"],a:1},
+{id:59,cat:"mort",q:"FOIR for borrowers having Net Monthly Income above \u20B975,000 up to \u20B93.00 lakh is:",o:["50%","60%","70%","75%"],a:1},
+{id:60,cat:"mort",q:"Income for salaried borrowers is calculated based on:",o:["Last 12 months' salary","Average Net Monthly Income of the last 2 months","Last 6 months' salary","Current month's salary only"],a:1},
+{id:61,cat:"mort",q:"Income for non-salaried borrowers is calculated based on:",o:["Last 1 year's income","Average Net Annual Income of the last 2 years","Last 5 years' income","Estimated future income"],a:1},
+{id:62,cat:"mort",q:"Margin on Residential Property is:",o:["20%","25%","35%","50%"],a:1},
+{id:63,cat:"mort",q:"Margin on Commercial Property is:",o:["25%","35%","40%","50%"],a:1},
+{id:64,cat:"mort",q:"Maximum repayment period for Term Loan is:",o:["120 Months","144 Months","180 Months","240 Months"],a:2},
+{id:65,cat:"mort",q:"Maximum moratorium period is:",o:["1 Month","2 Months","3 Months","6 Months"],a:2},
+{id:66,cat:"mort",q:"Maximum normal age of the mortgaged building is:",o:["15 Years","20 Years","25 Years","30 Years"],a:2},
+{id:67,cat:"mort",q:"Insurance premium of the mortgaged property is borne by:",o:["Bank","Government","Borrower","Valuer"],a:2},
+{id:68,cat:"mort",q:"Before creation of Equitable Mortgage, which search is mandatory?",o:["Income Tax Search","ROC Search","CERSAI Search","GST Search"],a:2},
+{id:69,cat:"mort",q:"Credit Information Report (CIR/CIBIL) should be obtained for:",o:["Applicant only","Guarantor only","Applicant and Guarantor","None"],a:2},
+{id:70,cat:"mort",q:"Which of the following is an important preventive measure under the scheme?",o:["Skip property inspection","Ignore warning signals","Accept photocopies without verification","Strict KYC compliance, regular security inspection and account monitoring"],a:3}
+];
+
+var OL=["A","B","C","D"];
+var CI={car:{l:"Car Loan",c:"bcc",i:"fa-car"},home:{l:"Home Loan",c:"bh",i:"fa-house"},mort:{l:"Mortgage Loan",c:"bm",i:"fa-landmark"}};
+var cQ=0,ans=[],tInt=null,tL=30,qStart=0,aAuth=false,AP="upgb2026",TD=30,CIR=2*Math.PI*24;
+
+(function(){var c=document.getElementById("ptc");for(var i=0;i<25;i++){var p=document.createElement("div");p.className="pt";p.style.left=Math.random()*100+"%";p.style.animationDuration=(8+Math.random()*12)+"s";p.style.animationDelay=(Math.random()*10)+"s";var s=(2+Math.random()*3)+"px";p.style.width=s;p.style.height=s;c.appendChild(p)}})();
+
+function toast(m,t){t=t||"n";var c=document.getElementById("tc");var d=document.createElement("div");d.className="to t"+t;var ic={s:"fa-check-circle",e:"fa-exclamation-circle",n:"fa-info-circle"};d.innerHTML='<i class="fas '+(ic[t]||ic.n)+'"></i><span>'+m+'</span>';c.appendChild(d);setTimeout(function(){d.style.opacity="0";d.style.transform="translateX(40px)";d.style.transition="all .3s";setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},300)},3500)}
+
+function go(id){var ss=document.querySelectorAll(".scr");for(var i=0;i<ss.length;i++)ss[i].classList.remove("on");var el=document.getElementById(id);if(el)el.classList.add("on");if(id==="S_admin"&&aAuth)refAd();window.scrollTo(0,0)}
+
+function startQ(){try{var n=document.getElementById("pName");if(!n)return;var nm=n.value.trim();if(!nm){toast("Please enter your name","e");n.focus();return}var br=((document.getElementById("pBranch")||{}).value||"").trim();var co=((document.getElementById("pCode")||{}).value||"").trim();cQ=0;ans=[];qStart=Date.now();try{sessionStorage.setItem("qp",JSON.stringify({n:nm,b:br,c:co}))}catch(e){}document.getElementById("qTot").textContent=QD.length;go("S_quiz");renderQ()}catch(e){toast("Error: "+e.message,"e")}}
+
+function renderQ(){try{var q=QD[cQ];if(!q)return;var ci=CI[q.cat];var bg=document.getElementById("qCat");if(bg){bg.className="bd "+ci.c;bg.innerHTML='<i class="fas '+ci.i+'" style="margin-right:4px"></i>'+ci.l}var ce=document.getElementById("qCur");if(ce)ce.textContent=cQ+1;var pe=document.getElementById("pFill");if(pe)pe.style.width=(cQ/QD.length*100)+"%";var cc=0,wc=0;for(var i=0;i<ans.length;i++){if(ans[i].s===ans[i].c)cc++;else if(ans[i].s!==-1)wc++}var cce=document.getElementById("ccnt"),wce=document.getElementById("wcnt");if(cce)cce.textContent=cc;if(wce)wce.textContent=wc;var qt=document.getElementById("qTxt");if(qt)qt.textContent="Q"+(cQ+1)+". "+q.q;var oc=document.getElementById("qOpts");if(!oc)return;oc.innerHTML="";for(var j=0;j<q.o.length;j++){(function(idx){var b=document.createElement("button");b.className="ob";b.innerHTML='<span class="ol">'+OL[idx]+"</span><span>"+q.o[idx]+"</span>";b.onclick=function(){selOpt(idx)};oc.appendChild(b)})(j)}var nw=document.getElementById("nWrap");if(nw)nw.style.display="none";var nb=document.getElementById("nBtn");if(nb){nb.innerHTML=cQ===QD.length-1?'See Results <i class="fas fa-flag-checkered" style="margin-left:8px"></i>':'Next <i class="fas fa-arrow-right" style="margin-left:8px"></i>'}var cd=document.getElementById("qCard");if(cd){cd.classList.remove("fi");void cd.offsetWidth;cd.classList.add("fi")}startT()}catch(e){toast("Error: "+e.message,"e")}}
+
+function selOpt(idx){try{clearInterval(tInt);var q=QD[cQ];var tt=TD-tL;ans.push({s:idx,c:q.a,t:tt});var bs=document.querySelectorAll("#qOpts .ob");for(var i=0;i<bs.length;i++){bs[i].classList.add("dis");if(i===q.a)bs[i].classList.add("ca");if(i===idx&&idx!==q.a)bs[i].classList.add("wa")}var nw=document.getElementById("nWrap");if(nw)nw.style.display="flex";var cc=0,wc=0,sk=0;for(var j=0;j<ans.length;j++){if(ans[j].s===ans[j].c)cc++;else if(ans[j].s===-1)sk++;else wc++}var cce=document.getElementById("ccnt"),wce=document.getElementById("wcnt");if(cce)cce.textContent=cc;if(wce)wce.textContent=wc+sk}catch(e){toast("Error: "+e.message,"e")}}
+
+function timeUp(){try{var q=QD[cQ];ans.push({s:-1,c:q.a,t:TD});var bs=document.querySelectorAll("#qOpts .ob");for(var i=0;i<bs.length;i++){bs[i].classList.add("dis");if(i===q.a)bs[i].classList.add("ca")}var nw=document.getElementById("nWrap");if(nw)nw.style.display="flex";toast("Time's up!","e");var wc=0,sk=0;for(var j=0;j<ans.length;j++){if(ans[j].s===-1)sk++;else if(ans[j].s!==ans[j].c)wc++}var wce=document.getElementById("wcnt");if(wce)wce.textContent=wc+sk}catch(e){toast("Error: "+e.message,"e")}}
+
+function nextQ(){cQ++;if(cQ>=QD.length)finishQ();else renderQ()}
+
+function startT(){clearInterval(tInt);tL=TD;updT();tInt=setInterval(function(){tL--;updT();if(tL<=0){clearInterval(tInt);timeUp()}},1000)}
+
+function updT(){var ci=document.getElementById("tCir"),tx=document.getElementById("tTxt");if(!ci||!tx)return;ci.style.strokeDashoffset=CIR*(1-tL/TD);tx.textContent=tL;if(tL<=5){ci.classList.add("ug");tx.classList.add("ug")}else{ci.classList.remove("ug");tx.classList.remove("ug")}}
+
+function finishQ(){clearInterval(tInt);var pl=null;try{pl=JSON.parse(sessionStorage.getItem("qp"))}catch(e){}if(!pl)pl={n:"Unknown",b:"-",c:"-"};var tt=Math.round((Date.now()-qStart)/1000),cc=0,wc=0,sk=0;for(var i=0;i<ans.length;i++){if(ans[i].s===ans[i].c)cc++;else if(ans[i].s===-1)sk++;else wc++}var pct=Math.round(cc/QD.length*100);var sec={};for(var qi=0;qi<QD.length;qi++){var cat=QD[qi].cat;if(!sec[cat])sec[cat]={c:0,t:0};sec[cat].t++;if(ans[qi]&&ans[qi].s===ans[qi].c)sec[cat].c++}var aa=[];for(var ai=0;ai<ans.length;ai++)aa.push({q:QD[ai].id,s:ans[ai].s,c:ans[ai].c,t:ans[ai].t});var r={id:Date.now().toString(36)+Math.random().toString(36).substr(2,5),nm:pl.n,br:pl.b||"-",cd:pl.c||"-",dt:new Date().toISOString(),tt:tt,cc:cc,wc:wc,sk:sk,pct:pct,sec:sec,ans:aa};var all=gR();all.push(r);sR(all);renderRes(r);go("S_result");if(pct>=60)confetti()}
+
+function renderRes(r){var m=Math.floor(r.tt/60),s=r.tt%60,ts=m+":"+(s<10?"0":"")+s;var gr=r.pct>=90?"Excellent":r.pct>=75?"Very Good":r.pct>=60?"Good":r.pct>=40?"Average":"Needs Improvement";var gc=r.pct>=75?"color:#10b981":r.pct>=50?"color:#f59e0b":"color:#ef4444";var sh="";var cats=["car","home","mort"];for(var i=0;i<cats.length;i++){var cat=cats[i],sv=r.sec[cat];if(!sv)continue;var ci=CI[cat],sp=Math.round(sv.c/sv.t*100),bc=sp>=60?"var(--ok)":sp>=40?"var(--accent)":"var(--no)";sh+='<div class="stc" style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="bd '+ci.c+'" style="font-size:11px">'+ci.l+"</span></div><div style='font-size:24px;font-weight:800;font-family:Outfit,sans-serif'>"+sv.c+'<span style="color:#64748b;font-size:16px">/'+sv.t+"</span></div><div style='width:100%;height:6px;border-radius:3px;background:#1e293b;margin-top:8px;overflow:hidden'><div style='height:100%;border-radius:3px;width:"+sp+"%;background:"+bc+"'></div></div></div>"}var so={n:r.nm,b:r.br,c:r.cc,w:r.wc,s:r.sk,p:r.pct,t:r.tt,d:r.dt,sc:r.sec,a:r.ans.map(function(x){return{q:x.q,s:x.s,c:x.c,t:x.t}})};var sc=btoa(unescape(encodeURIComponent(JSON.stringify(so))));var bl=r.br!=="-"?esc(r.br):"";var cl=r.cd!=="-"?" &middot; "+esc(r.cd):"";var h='<div class="fi"><div class="sc" style="--p:'+r.pct+';margin:0 auto 24px"><span style="font-size:40px;font-weight:900;font-family:Outfit,sans-serif;color:var(--accent)">'+r.pct+"%</span><span style='font-size:14px;color:#94a3b8;margin-top:4px;display:block'>"+r.cc+"/"+QD.length+" correct</span></div>"+'<h2 style="font-size:24px;font-weight:700;margin-bottom:4px;font-family:Outfit,sans-serif">'+esc(r.nm)+'</h2><p style="color:#94a3b8;font-size:14px;margin-bottom:4px">'+bl+cl+"</p>"+'<p style="'+gc+";font-weight:600;font-size:18px;margin-bottom:24px'>"+gr+"</p>"+'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px"><div class="stc" style="text-align:center"><div class="sv" style="color:#10b981">'+r.cc+'</div><div class="sl">Correct</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#ef4444">'+r.wc+'</div><div class="sl">Wrong</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#94a3b8">'+r.sk+'</div><div class="sl">Skipped</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#f59e0b">'+ts+'</div><div class="sl">Time</div></div></div><h3 style="font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Section-wise Performance</h3><div style="display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;justify-content:center">'+sh+"</div>"+'<div class="gc" style="padding:20px;text-align:left;margin-bottom:24px"><h3 style="font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px"><i class="fas fa-share-nodes" style="margin-right:6px"></i>Share Your Score</h3><p style="font-size:12px;color:#64748b;margin-bottom:12px">Copy this code and send to your admin to add your score to the leaderboard.</p><div style="display:flex;gap:8px"><input type="text" class="inf" style="font-family:monospace;font-size:11px" value="'+escA(sc)+'" readonly id="scField"><button class="bp" style="padding:12px 18px;font-size:13px;white-space:nowrap" id="btnCopy"><i class="fas fa-copy"></i></button></div></div><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="bs" id="btnReview"><i class="fas fa-magnifying-glass" style="margin-right:8px"></i>Review Answers</button><button class="bp" id="btnRetake"><i class="fas fa-redo" style="margin-right:8px"></i>Retake Quiz</button><button class="bs" id="btnHome"><i class="fas fa-home" style="margin-right:8px"></i>Home</button></div></div>';document.getElementById("resCont").innerHTML=h;document.getElementById("btnCopy").onclick=copySC;document.getElementById("btnReview").onclick=function(){var all=gR();if(all.length)showDet(all[all.length-1]);else toast("No result","e")};document.getElementById("btnRetake").onclick=function(){go("S_register")};document.getElementById("btnHome").onclick=function(){go("S_welcome")}}
+
+function copySC(){var f=document.getElementById("scField");if(!f)return;f.select();f.setSelectionRange(0,99999);try{navigator.clipboard.writeText(f.value).then(function(){toast("Score code copied!","s")})}catch(e){try{document.execCommand("copy");toast("Score code copied!","s")}catch(e2){}}}
+
+function confetti(){var cols=["#f59e0b","#fbbf24","#10b981","#34d399","#60a5fa","#f472b6","#a78bfa"];for(var i=0;i<50;i++){var c=document.createElement("div");c.className="cff";c.style.left=Math.random()*100+"%";c.style.background=cols[Math.floor(Math.random()*cols.length)];var sz=(6+Math.random()*8)+"px";c.style.width=sz;c.style.height=sz;c.style.borderRadius=Math.random()>.5?"50%":"2px";c.style.animationDuration=(2+Math.random()*3)+"s";c.style.animationDelay=(Math.random()*1.5)+"s";document.body.appendChild(c);(function(el){setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},6000)})(c)}}
+
+function admLog(){var p=((document.getElementById("aPass")||{}).value||"");if(p===AP){aAuth=true;toast("Admin access granted","s");go("S_admin")}else toast("Incorrect password","e")}
+
+function gR(){try{var d=localStorage.getItem("uqr");return d?JSON.parse(d):[]}catch(e){return[]}}
+function sR(d){try{localStorage.setItem("uqr",JSON.stringify(d))}catch(e){}}
+
+function refAd(){var r=gR();rSt(r);rLB(r);rPar();rAna(r)}
+
+function rSt(r){var n=r.length,ap=0,ts=0,at=0;if(n){var sp=0,st=0;for(var i=0;i<n;i++){sp+=r[i].pct;st+=r[i].tt;if(r[i].pct>ts)ts=r[i].pct}ap=Math.round(sp/n);at=Math.round(st/n)}var m=Math.floor(at/60),s=at%60;document.getElementById("stCards").innerHTML='<div class="stc"><div class="sv" style="color:#f59e0b">'+n+'</div><div class="sl"><i class="fas fa-users" style="margin-right:4px"></i>Participants</div></div><div class="stc"><div class="sv" style="color:#10b981">'+ap+'%</div><div class="sl"><i class="fas fa-chart-line" style="margin-right:4px"></i>Avg Score</div></div><div class="stc"><div class="sv" style="color:#60a5fa">'+ts+'%</div><div class="sl"><i class="fas fa-trophy" style="margin-right:4px"></i>Top Score</div></div><div class="stc"><div class="sv" style="color:#c084fc">'+m+":"+(s<10?"0":"")+s+'</div><div class="sl"><i class="fas fa-clock" style="margin-right:4px"></i>Avg Time</div></div>'}
+
+function rLB(r){var s=r.slice().sort(function(a,b){return b.pct-a.pct||a.tt-b.tt});if(!s.length){document.getElementById("lbTab").innerHTML='<p style="color:#64748b;text-align:center;padding:32px 0">No participants yet.</p>';return}var rw="";for(var i=0;i<s.length;i++){var d=s[i],ri=i===0?'<i class="fas fa-crown" style="color:#eab308"></i>':i===1?'<i class="fas fa-medal" style="color:#cbd5e1"></i>':i===2?'<i class="fas fa-medal" style="color:#92400e"></i>':'<span style="color:#64748b">'+(i+1)+'</span>';var ds=new Date(d.dt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});var sc=d.pct>=60?"color:#10b981":d.pct>=40?"color:#f59e0b":"color:#ef4444";rw+='<tr style="cursor:pointer" class="lb-r" data-i="'+i+'"><td style="text-align:center;width:48px">'+ri+'</td><td><div style="font-weight:600">'+esc(d.nm)+'</div><div style="font-size:12px;color:#64748b">'+esc(d.br)+(d.cd!=="-"?" &middot; "+esc(d.cd):"")+'</div></td><td style="font-weight:700;'+sc+'">'+d.pct+'%</td><td style="color:#94a3b8">'+d.cc+"/"+QD.length+'</td><td style="color:#64748b;font-size:13px">'+ds+'</td><td><i class="fas fa-eye" style="color:#f59e0b"></i></td></tr>'}document.getElementById("lbTab").innerHTML='<table class="dt"><thead><tr><th style="text-align:center">Rank</th><th>Participant</th><th>Score</th><th>Correct</th><th>Date</th><th></th></tr></thead><tbody>'+rw+'</tbody></table>';window._lbD=s;var rows=document.querySelectorAll(".lb-r");for(var j=0;j<rows.length;j++){(function(idx){rows[idx].onclick=function(){showDet(window._lbD[idx])}})(j)}}
+
+function rPar(){var r=gR(),se=((document.getElementById("sPar")||{}).value||"").toLowerCase(),f=[];for(var i=0;i<r.length;i++){var d=r[i];if(d.nm.toLowerCase().indexOf(se)!==-1||d.br.toLowerCase().indexOf(se)!==-1||d.cd.toLowerCase().indexOf(se)!==-1)f.push(d)}if(!f.length){document.getElementById("parTab").innerHTML='<p style="color:#64748b;text-align:center;padding:32px 0">No participants found.</p>';return}var rw="";for(var j=0;j<f.length;j++){var d=f[j],ds=new Date(d.dt).toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),sc=d.pct>=60?"color:#10b981":d.pct>=40?"color:#f59e0b":"color:#ef4444";rw+='<tr style="cursor:pointer" class="par-r" data-rid="'+d.id+'"><td>'+(j+1)+'</td><td><div style="font-weight:600">'+esc(d.nm)+'</div></td><td>'+esc(d.br)+'</td><td>'+esc(d.cd)+'</td><td style="font-weight:700;'+sc+'">'+d.pct+'%</td><td>'+d.cc+"/"+QD.length+'</td><td style="color:#64748b;font-size:13px">'+ds+'</td><td><i class="fas fa-eye" style="color:#f59e0b;cursor:pointer"></i> <i class="fas fa-trash-can" style="color:#ef4444;cursor:pointer" data-did="'+d.id+'"></i></td></tr>'}document.getElementById("parTab").innerHTML='<table class="dt"><thead><tr><th>#</th><th>Name</th><th>Branch</th><th>Code</th><th>Score</th><th>Correct</th><th>Submitted</th><th>Actions</th></tr></thead><tbody>'+rw+'</tbody></table>';var prs=document.querySelectorAll(".par-r");for(var k=0;k<prs.length;k++){(function(row){var rid=row.getAttribute("data-rid");row.onclick=function(e){if(e.target.getAttribute("data-did")){e.stopPropagation();delR(e.target.getAttribute("data-did"));return}var all=gR();for(var x=0;x<all.length;x++){if(all[x].id===rid){showDet(all[x]);return}}}})(prs[k])}}
+
+function rAna(r){if(!r.length){document.getElementById("secSt").innerHTML='<div style="grid-column:span 3;text-align:center;color:#64748b;padding:32px 0">No data available</div>';document.getElementById("qAna").innerHTML="";return}var cats=["car","home","mort"],sh="";for(var i=0;i<cats.length;i++){var cat=cats[i],ci=CI[cat],t=0;for(var qi=0;qi<QD.length;qi++)if(QD[qi].cat===cat)t++;var sm=0;for(var ri=0;ri<r.length;ri++)if(r[ri].sec&&r[ri].sec[cat])sm+=r[ri].sec[cat].c;var av=(sm/r.length).toFixed(1),p=Math.round(av/t*100),bc=p>=60?"var(--ok)":p>=40?"var(--accent)":"var(--no)";sh+='<div class="stc"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="bd '+ci.c+'">'+ci.l+"</span></div><div style='font-size:24px;font-weight:800;font-family:Outfit,sans-serif'>"+av+'<span style="color:#64748b;font-size:16px">/'+t+"</span></div><div style='font-size:12px;color:#64748b;margin-top:4px'>Avg correct ("+p+"%)</div><div style='width:100%;height:8px;border-radius:4px;background:#1e293b;margin-top:12px;overflow:hidden'><div style='height:100%;border-radius:4px;width:"+p+"%;background:"+bc+"'></div></div></div>"}document.getElementById("secSt").innerHTML=sh;var qr="";for(var qqi=0;qqi<QD.length;qqi++){var q=QD[qqi],qi=CI[q.cat],cc=0;for(var rri=0;rri<r.length;rri++)if(r[rri].ans&&r[rri].ans[qqi]&&r[rri].ans[qqi].s===r[rri].ans[qqi].c)cc++;var qp=r.length?Math.round(cc/r.length*100):0,qbc=qp>=70?"var(--ok)":qp>=40?"var(--accent)":"var(--no)",qt=q.q.length>70?q.q.substring(0,70)+"...":q.q;qr+='<tr><td style="text-align:center;color:#64748b">'+(qqi+1)+'</td><td><span class="bd '+qi.c+'" style="font-size:10px;padding:2px 8px">'+qi.l+"</span></td><td style='font-size:13px;max-width:280px'>"+esc(qt)+'</td><td style="font-weight:700;color:'+qbc+'">'+qp+'%</td><td style="min-width:100px"><div style="width:100%;height:8px;border-radius:4px;background:#1e293b;overflow:hidden"><div style="height:100%;border-radius:4px;width:'+qp+"%;background:"+qbc+'"></div></div></td><td style="color:#64748b;font-size:13px">'+cc+"/"+r.length+"</td></tr>"}document.getElementById("qAna").innerHTML='<table class="dt"><thead><tr><th style="text-align:center">Q#</th><th>Section</th><th>Question</th><th>% Correct</th><th>Bar</th><th>Count</th></tr></thead><tbody>'+qr+"</tbody></table>"}
+
+function showDet(r){var mo=document.getElementById("dModal"),mc=document.getElementById("dModC");if(!mo||!mc||!r)return;var ds=new Date(r.dt).toLocaleString("en-IN"),m=Math.floor(r.tt/60),s=r.tt%60,ts=m+":"+(s<10?"0":"")+s;var ah="";for(var i=0;i<QD.length;i++){var q=QD[i],a=(r.ans&&r.ans[i])?r.ans[i]:{s:-1,c:q.a,t:0},ci=CI[q.cat],ic=a.s===a.c,sk=a.s===-1,sc=ic?"ac":sk?"ask":"aw",si=ic?'<i class="fas fa-check-circle" style="color:#10b981"></i>':sk?'<i class="fas fa-minus-circle" style="color:#64748b"></i>':'<i class="fas fa-times-circle" style="color:#ef4444"></i>';var st=sk?'<span style="color:#64748b;font-style:italic">Skipped</span>':'<span style="color:'+(ic?"#10b981":"#ef4444")+';font-weight:600">'+OL[a.s]+". "+esc(q.o[a.s])+"</span>";var ct='<span style="color:#10b981;font-weight:600">'+OL[a.c]+". "+esc(q.o[a.c])+"</span>";ah+='<div class="adc '+sc+'"><div style="display:flex;align-items:flex-start;gap:12px"><div style="margin-top:2px">'+si+"</div><div style='flex:1;min-width:0'><div style='display:flex;align-items:center;gap:8px;margin-bottom:6px'><span style='font-size:12px;font-weight:700;color:#64748b'>Q"+(i+1)+'</span><span class="bd '+ci.c+'" style="font-size:10px;padding:1px 7px">'+ci.l+"</span><span style='font-size:12px;color:#64748b;margin-left:auto'>"+a.t+"s</span></div><p style='font-size:14px;font-weight:500;margin-bottom:8px'>"+esc(q.q)+'</p><div style="font-size:12px;line-height:1.8"><div>Your answer: '+st+"</div>"+(!ic?"<div>Correct answer: "+ct+"</div>":"")+"</div></div></div></div>"}var ssh="";var cats=["car","home","mort"];for(var j=0;j<cats.length;j++){var cat=cats[j],sv=r.sec?r.sec[cat]:null;if(!sv)continue;var ci=CI[cat],sp=Math.round(sv.c/sv.t*100),bc=sp>=60?"var(--ok)":sp>=40?"var(--accent)":"var(--no)";ssh+='<div style="display:flex;align-items:center;gap:12px"><span class="bd '+ci.c+'">'+ci.l+"</span><span style='font-weight:700'>"+sv.c+"/"+sv.t+"</span><div style='flex:1;height:8px;border-radius:4px;background:#1e293b;overflow:hidden'><div style='height:100%;border-radius:4px;width:"+sp+"%;background:"+bc+"'></div></div><span style='font-size:14px;font-weight:700;color:"+bc+"'>"+sp+"%</span></div>"}mc.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px"><div><h3 style="font-size:20px;font-weight:700;font-family:Outfit,sans-serif">'+esc(r.nm)+'</h3><p style="font-size:14px;color:#94a3b8">'+esc(r.br)+(r.cd!=="-"?" &middot; "+esc(r.cd):"")+" &middot; "+ds+'</p></div><button class="bs" style="padding:8px 14px" id="btnCloseMod"><i class="fas fa-times"></i></button></div>'+'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px"><div class="stc" style="text-align:center"><div class="sv" style="color:#f59e0b">'+r.pct+'%</div><div class="sl">Score</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#10b981">'+r.cc+'</div><div class="sl">Correct</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#ef4444">'+r.wc+'</div><div class="sl">Wrong</div></div><div class="stc" style="text-align:center"><div class="sv" style="color:#94a3b8">'+r.sk+'</div><div class="sl">Skipped</div></div></div>'+'<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">'+ssh+"</div>"+'<h4 style="font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px"><i class="fas fa-list-check" style="margin-right:6px"></i>All Answers (70 Questions)</h4>'+'<div style="max-height:50vh;overflow-y:auto;padding-right:4px">'+ah+"</div>";mo.classList.add("on");document.getElementById("btnCloseMod").onclick=clMod}
+
+function clMod(){var m=document.getElementById("dModal");if(m)m.classList.remove("on")}
+document.getElementById("dModal").addEventListener("click",function(e){if(e.target===this)clMod()});
+
+function impRes(){var ar=document.getElementById("impArea");if(!ar)return;var tx=ar.value.trim();if(!tx){toast("Please paste result codes","e");return}var ls=tx.split("\n"),all=gR(),im=0,dup=0,err=0;for(var i=0;i<ls.length;i++){var ln=ls[i].trim();if(!ln)continue;try{var d=JSON.parse(decodeURIComponent(escape(atob(ln))));var ex=false;for(var j=0;j<all.length;j++){if(all[j].nm===d.n&&all[j].pct===d.p&&Math.abs(new Date(all[j].dt).getTime()-new Date(d.d).getTime())<2000){ex=true;break}}if(ex){dup++;continue}var sec={};if(d.sc)for(var k in d.sc)if(d.sc.hasOwnProperty(k))sec[k]=d.sc[k];var aa=[];if(d.a)for(var ai=0;ai<d.a.length;ai++)aa.push({q:d.a[ai].q,s:d.a[ai].s,c:d.a[ai].c,t:d.a[ai].t});all.push({id:Date.now().toString(36)+Math.random().toString(36).substr(2,5),nm:d.n,br:d.b||"-",cd:"-",dt:d.d,tt:d.t,cc:d.c,wc:d.w,sk:d.s,pct:d.p,sec:sec,ans:aa});im++}catch(e){err++}}sR(all);ar.value="";if(im)toast("Imported "+im+" result(s)","s");if(dup)toast(dup+" duplicate(s) skipped","n");if(err)toast(err+" invalid code(s) skipped","e");if(im>0)refAd()}
+
+function expCSV(){var r=gR();if(!r.length){toast("No data to export","e");return}var csv="Rank,Name,Branch,Code,Score(%),Correct,Wrong,Skipped,Time(s),Date,";for(var qi=0;qi<QD.length;qi++)csv+="Q"+(qi+1)+"("+OL[QD[qi].a]+"),";csv+="\n";var s=r.slice().sort(function(a,b){return b.pct-a.pct||a.tt-b.tt});for(var i=0;i<s.length;i++){var d=s[i],ds=new Date(d.dt).toLocaleString("en-IN");csv+=(i+1)+',"'+csf(d.nm)+'","'+csf(d.br)+'","'+csf(d.cd)+'",'+d.pct+","+d.cc+","+d.wc+","+d.sk+","+d.tt+',"'+ds+'",';for(var ai=0;ai<QD.length;ai++){if(d.ans&&d.ans[ai])csv+=(d.ans[ai].s===-1?"Skipped":OL[d.ans[ai].s])+",";else csv+="-,"}csv+="\n"}var bl=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"}),ur=URL.createObjectURL(bl),a=document.createElement("a");a.href=ur;a.download="UPGB_Quiz_Results_"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(ur);toast("CSV exported","s")}
+function csf(s){return(s||"").replace(/"/g,"\"\"")}
+
+function delR(id){if(!confirm("Delete this result?"))return;var all=gR(),f=[];for(var i=0;i<all.length;i++)if(all[i].id!==id)f.push(all[i]);sR(f);refAd();toast("Result deleted","n")}
+
+function clrAll(){if(!confirm("Delete ALL participant data? This cannot be undone."))return;if(!confirm("Permanently remove all scores and answers. Continue?"))return;localStorage.removeItem("uqr");refAd();toast("All data cleared","n")}
+
+function swTab(btn,tid){var ts=document.querySelectorAll(".tb");for(var i=0;i<ts.length;i++)ts[i].classList.remove("on");btn.classList.add("on");var ids=["tOv","tPar","tImp","tAna"];for(var j=0;j<ids.length;j++)document.getElementById(ids[j]).style.display=ids[j]===tid?"block":"none"}
+
+function esc(s){var d=document.createElement("div");d.textContent=s||"";return d.innerHTML}
+function escA(s){return(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/'/g,"&#39;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+document.getElementById("btnStart").onclick=function(){go("S_register")};
+document.getElementById("btnAdmin").onclick=function(){go("S_admLog")};
+document.getElementById("btnRegBack").onclick=function(){go("S_welcome")};
+document.getElementById("btnBegin").onclick=function(){startQ()};
+document.getElementById("nBtn").onclick=function(){nextQ()};
+document.getElementById("btnAdBack").onclick=function(){go("S_welcome")};
+document.getElementById("btnAdUnlock").onclick=function(){admLog()};
+document.getElementById("btnCSV").onclick=function(){expCSV()};
+document.getElementById("btnClear").onclick=function(){clrAll()};
+document.getElementById("btnLogout").onclick=function(){aAuth=false;go("S_welcome")};
+document.getElementById("btnImp").onclick=function(){impRes()};
+document.getElementById("sPar").oninput=function(){rPar()};
+document.getElementById("aPass").onkeydown=function(e){if(e.key==="Enter")admLog()};
+document.getElementById("tabBar").onclick=function(e){var btn=e.target.closest(".tb");if(!btn)return;var tid=btn.getAttribute("data-t");if(tid)swTab(btn,tid)};
+
+document.addEventListener("keydown",function(e){var qs=document.getElementById("S_quiz");if(!qs||!qs.classList.contains("on"))return;var km={"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3};var idx=km[e.key.toLowerCase()];if(idx!==undefined){var bs=document.querySelectorAll("#qOpts .ob:not(.dis)");if(bs.length>0&&idx<bs.length){selOpt(idx);return}}if(e.key==="Enter"){var nw=document.getElementById("nWrap");if(nw&&nw.style.display!=="none")nextQ()}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")clMod()});
+window.addEventListener("beforeunload",function(e){var qs=document.getElementById("S_quiz");if(qs&&qs.classList.contains("on")&&ans.length>0){e.preventDefault();e.returnValue="Quiz in progress."}});
+</script>
+</body>
+</html>

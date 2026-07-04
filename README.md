@@ -1,1 +1,0 @@
-# upgb-quiz
